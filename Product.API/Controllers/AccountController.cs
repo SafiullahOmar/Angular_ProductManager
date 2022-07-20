@@ -22,7 +22,7 @@ namespace Product.API.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly AppSettings _appSetting;
-        public AccountController(SignInManager<IdentityUser> signInManager,UserManager<IdentityUser> userManager,IOptions< AppSettings >appSettings)
+        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IOptions<AppSettings> appSettings)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -30,13 +30,15 @@ namespace Product.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] Register form) {
+        public async Task<IActionResult> Register([FromBody] Register form)
+        {
             List<string> errorList = new List<string>();
-            var user = new IdentityUser() { 
-            Email=form.Email,
-            UserName=form.Username,
-            SecurityStamp=Guid.NewGuid().ToString()
-            
+            var user = new IdentityUser()
+            {
+                Email = form.Email,
+                UserName = form.Username,
+                SecurityStamp = Guid.NewGuid().ToString()
+
             };
 
             var result = await _userManager.CreateAsync(user, form.Password);
@@ -45,25 +47,28 @@ namespace Product.API.Controllers
                 await _userManager.AddToRoleAsync(user, "Customer");
                 return Ok(new { userName = user.UserName, email = user.Email, status = 1, message = "Registration Successfull" });
             }
-            else {
+            else
+            {
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
-                    errorList.Add(error.Description);   
+                    errorList.Add(error.Description);
                 }
             }
 
             return BadRequest(new JsonResult(errorList));
-            
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] Login form) {
-            var user =await _userManager.FindByNameAsync(form.Username);
+        public async Task<IActionResult> Login([FromBody] Login form)
+        {
+            var user = await _userManager.FindByNameAsync(form.Username);
             var roles = await _userManager.GetRolesAsync(user);
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appSetting.Secret));
-            if (user!=null && await _userManager.CheckPasswordAsync(user,form.Password)) {
-                var tokenHandler = new JwtSecurityToken();
+            if (user != null && await _userManager.CheckPasswordAsync(user, form.Password))
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
 
                 var tokenDescriptor = new SecurityTokenDescriptor()
                 {
@@ -80,9 +85,11 @@ namespace Product.API.Controllers
                     Audience = _appSetting.Audience,
                     Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_appSetting.ExpireTime))
 
-            };
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return Ok(new { token = tokenHandler.WriteToken(token), expiration = token.ValidTo, username = user.UserName, userrole = roles.FirstOrDefault() });
 
-        }
+            }
 
             ModelState.AddModelError("", "User is not Found");
             return Unauthorized(new { LoginError = "please check your crednetials" });
