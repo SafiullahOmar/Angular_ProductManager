@@ -45,11 +45,12 @@ namespace Product.API
                 });
             });
             services.AddControllers();
-            services.AddIdentity<IdentityUser, IdentityRole>(options=> {
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 3; 
+                options.Password.RequiredLength = 3;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
 
@@ -77,7 +78,12 @@ namespace Product.API
                  ValidIssuer = appSettings.Site,
                  IssuerSigningKey = new SymmetricSecurityKey(key)
              }
-            ) ;
+            );
+
+            services.AddAuthorization(options=> {
+                options.AddPolicy("RequireLoggIn", policy => policy.RequireRole("Admin", "Customer", "Moderator").RequireAuthenticatedUser());
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Admin").RequireAuthenticatedUser());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Product.API", Version = "v1" });

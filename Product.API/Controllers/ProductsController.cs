@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Product.API.Data;
@@ -19,12 +20,14 @@ namespace Product.API.Controllers
             _applicationDbContext = applicationDbContext;
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
+        [Authorize(Policy = "RequireLoggIn")]
         public async Task<IActionResult> GetProducts()
         {
             return Ok(await _applicationDbContext.Products.ToListAsync());
         }
-        [HttpPost]
+        [HttpPost("[action]")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> AddProduct([FromBody] Product.API.Model.Product form)
         {
             var newProduct = new Product.API.Model.Product()
@@ -41,7 +44,8 @@ namespace Product.API.Controllers
             await _applicationDbContext.SaveChangesAsync();
             return Ok();
         }
-        [HttpPut]
+        [HttpPut("[action]/{id}")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int Id, [FromBody] Product.API.Model.Product form)
         {
             if (!ModelState.IsValid)
@@ -62,7 +66,8 @@ namespace Product.API.Controllers
             return Ok(new JsonResult("The Product with Id" + Id + " is updated "));
         }
 
-        [HttpDelete]
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> DeleteProduct([FromRoute] int Id)
         {
             if (!ModelState.IsValid)
