@@ -30,8 +30,8 @@ export class LoginComponent implements OnInit {
   onSubmit(){
     let userLogin=this.insertForm.value;
     this.account.login(userLogin.UserName,userLogin.Password).subscribe((res)=>{
-      let token=(<any>res).token;
-      console.log('login');
+     // let token=res.token;
+     // console.log(token);
       this.invalidLogin=false;
       this.router.navigateByUrl(this.returnURL);
 

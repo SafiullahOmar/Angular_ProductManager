@@ -29,7 +29,7 @@ namespace Product.API.Controllers
             _appSetting = appSettings.Value;
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Register([FromBody] Register form)
         {
             List<string> errorList = new List<string>();
@@ -38,13 +38,12 @@ namespace Product.API.Controllers
                 Email = form.Email,
                 UserName = form.Username,
                 SecurityStamp = Guid.NewGuid().ToString()
-
             };
 
             var result = await _userManager.CreateAsync(user, form.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Customer");
+                await _userManager.AddToRoleAsync(user, "Admin");
                 return Ok(new { userName = user.UserName, email = user.Email, status = 1, message = "Registration Successfull" });
             }
             else
@@ -60,7 +59,7 @@ namespace Product.API.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Login([FromBody] Login form)
         {
             var user = await _userManager.FindByNameAsync(form.Username);
