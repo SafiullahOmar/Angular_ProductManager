@@ -1,3 +1,11 @@
+<style>
+    .errorMessage {
+  color: red;
+}
+
+</style>
+
+
 <!-- LOGIN SECTION -->
 <section class="login-block">
     <!-- ALERT  WARNING START -->
@@ -19,10 +27,10 @@
                 <form class="login-form form" [formGroup]="insertForm" (ngSubmit)="onSubmit()">
                     <div class="form-group">
                         <label for="UserName" class="text-uppercase">Username</label>
-                        <input formControlName="Username" type="text" class="form-control" placeholder="" required autofocus>
-                        <div *ngIf="Username.touched && Username.errors"
+                        <input formControlName="UserName" type="text" class="form-control" placeholder="" required autofocus>
+                        <div *ngIf="UserName.touched && UserName.errors"
                              class="errorMessage">
-                          <span *ngIf="Username.hasError('required')">Username is required.</span>
+                          <span *ngIf="UserName.hasError('required')">Username is required.</span>
                         </div>
                     </div>
                     <div class="form-group">
