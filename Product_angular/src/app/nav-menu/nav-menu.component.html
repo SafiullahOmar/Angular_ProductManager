@@ -9,18 +9,20 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" [routerLink]="['/']">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/products']">Products</a>
+          <li class="nav-item" *ngIf="(loginStatus$ | async) as loginStatus">
+            <a class="nav-link" [routerLink]="['/products']" *ngIf="loginStatus">Products</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/login']">Login</a>
+          <li class="nav-item" *ngIf="!(loginStatus$ | async) as loginStatus">
+            <a class="nav-link" [routerLink]="['/login']" *ngIf="loginStatus" >Login</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['/register']">Register</a>
           </li>
-          
-          <li class="nav-item">
-            <a class="nav-link ">Logout</a>
+          <li class="nav-item" *ngIf="(loginStatus$ | async) as loginStatus">
+            <a class="nav-link " *ngIf="(userName$ | async) as UserName" >{{UserName}}</a>
+          </li>
+          <li class="nav-item" *ngIf="(loginStatus$ | async) as loginStatus">
+            <a class="nav-link " (click)="onLogout()" *ngIf="loginStatus" >Logout</a>
           </li>
         </ul>
         <form class="d-flex" role="search">

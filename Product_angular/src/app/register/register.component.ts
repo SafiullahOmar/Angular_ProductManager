@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountServicesService } from '../service/account-services.service';
-import{BsModalRef,BsModalService} from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -16,23 +16,24 @@ export class RegisterComponent implements OnInit {
   password!: FormControl;
   cPassword!: FormControl;
   email!: FormControl;
-  modalRef!:BsModalRef;
-  errorList!:string[];
-  @ViewChild('template') modal!:TemplateRef<any>;
-  constructor(private account: AccountServicesService, private fb: FormBuilder, 
-    private route: Router,private bsModalService:BsModalService) { }
+  modalRef!: BsModalRef;
+  errorList!: string[];
+  modalMessage ! :string;
+  @ViewChild('template') modal!: TemplateRef<any>;
+  constructor(private account: AccountServicesService, private fb: FormBuilder,
+    private route: Router, private bsModalService: BsModalService) { }
 
   ngOnInit(): void {
     this.userName = new FormControl('', [Validators.required]);
     this.password = new FormControl('', [Validators.required]);
     this.email = new FormControl('', [Validators.required]);
     this.cPassword = new FormControl('', [Validators.required, this.MustMatch(this.password)]);
-    this.errorList=[];
-    this.insertForm=this.fb.group({
-      'userName':this.userName,
-      'password':this.password,
-      'email':this.email,
-      'cPassword':this.cPassword
+    this.errorList = [];
+    this.insertForm = this.fb.group({
+      'userName': this.userName,
+      'password': this.password,
+      'email': this.email,
+      'cPassword': this.cPassword
     });
   }
 
@@ -52,14 +53,20 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  onSubmit(){
-    let userDetails=this.insertForm.value;
-    this.account.register(userDetails.userName,userDetails.password,userDetails.email).subscribe(res=>{
+  onSubmit() {
+    let userDetails = this.insertForm.value;
+    this.account.register(userDetails.userName, userDetails.password, userDetails.email).subscribe(res => {
       this.route.navigate(['/login']);
-    },error=>{
+    }, error => {
+      this.errorList=[];
+      for(var i=0;i<error.error.value.length;i++){
+        this.errorList.push(error.error.value[i]);
+      }
       console.log('error');
+      this.modalMessage="your attempt was unsucessfull";
+      this.modalRef=this.bsModalService.show(this.modal);
     });
-   // this.modalRef=this.bsModalService.show(this.modal);
+    
   }
 
 }

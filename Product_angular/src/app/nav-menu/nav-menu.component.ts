@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AccountServicesService } from '../service/account-services.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,9 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavMenuComponent implements OnInit {
 
-  constructor() { }
+  constructor(private service:AccountServicesService) { }
+
+  loginStatus$!:Observable<boolean>;
+  userName$!:Observable<string|null>;
+
 
   ngOnInit(): void {
+    this.loginStatus$=this.service.getIsloggIn;
+    this.userName$=this.service.getUserName;
+  }
+
+  onLogout(){
+    this.service.logOut();
   }
 
 }
