@@ -31,9 +31,11 @@ export class AccountServicesService {
           this.loginStatus.next(true);
           localStorage.setItem('loginStatus','1');
           localStorage.setItem('jwt',result.token);
-          localStorage.setItem('loginStatus',result.userName);
+          localStorage.setItem('username',result.userName);
           localStorage.setItem('userRole',result.userRole);
           localStorage.setItem('expiration',result.expiration);
+          this.UserName.next(localStorage.getItem('username'));
+          this.UserRole.next(localStorage.getItem('userRole'));
         }
 
       })
@@ -61,6 +63,11 @@ export class AccountServicesService {
     return this.UserRole.asObservable();
   }
   checkLoginStatus(): boolean {
+    var loginCookie=localStorage.getItem('loginStatus');
+    if(loginCookie=="1"){
+      return true;
+    }
+
     return false;
   }
 
