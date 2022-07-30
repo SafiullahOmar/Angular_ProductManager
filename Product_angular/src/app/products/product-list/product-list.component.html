@@ -18,9 +18,9 @@
           <td>{{product.productId}}</td>
           <td>{{product.name | uppercase}}</td>
           <td>{{product.description}}</td>
-          <td>{{true == product.outofstock ?  'No ': 'Yes '}}</td>
+          <td>{{true == product.outOfStock ?  'No ': 'Yes '}}</td>
           <td>{{product.price | currency: 'CAD':'symbol-narrow':'.2'}}</td>
-          <td><img [src]="product.imageUrl" *ngIf="product.imageUrl" style="float:right" width="75" /></td>
+          <td><img [src]="product.imageURL" *ngIf="product.imageURL" style="float:right" width="75" /></td>
           <td>
             <div class="btn-group mt-2" role="group">
               <button type="button" class="btn btn-success" (click)="onSelect(product)"><i class="fas fa-list"></i></button>

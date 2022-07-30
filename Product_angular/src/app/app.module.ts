@@ -10,13 +10,19 @@ import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import{ModalModule} from 'ngx-bootstrap/modal';
+import { DataTablesModule } from 'angular-datatables';
+import {RouterModule} from '@angular/router';
+import { AccessDeniedComponent } from './errors/access-denied/access-denied.component';
+import { JwtInterceptor } from './_helpers/jwt.Interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    AccessDeniedComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +30,9 @@ import{ModalModule} from 'ngx-bootstrap/modal';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    DataTablesModule,
+    RouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]
